@@ -1,0 +1,20 @@
+inpath( ) \
+{
+        # echo "comprobando si $PATH tiene $1"
+        case ":${PATH:=$1}:" in
+        *:$1:*) return 1 ;;
+        *) return 0 ;;
+        esac
+}
+
+# #!/bin/bash
+# source ~/bin/inpath
+# npent1="/usr/local/rbenv/bin"
+# npent2="/usr/local/rbenv/plugins/ruby-build/bin"
+# npent3="/usr/local/sbin"
+# MYPATH=$PATH
+# echo "Antes... $MYPATH"
+# inpath $npent1 && MYPATH="$npent1:$PATH"
+# inpath $npent2 && MYPATH="$npent2:$PATH"
+# inpath $npent3 && MYPATH="$npent3:$PATH"
+# echo "Después... $MYPATH"
