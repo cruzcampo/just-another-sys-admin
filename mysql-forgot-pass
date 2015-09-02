@@ -1,0 +1,85 @@
+javierpeces@Mozart:~$ sudo systemctl status mysql
+● mysql.service - LSB: Start and stop the mysql database server daemon
+   Loaded: loaded (/etc/init.d/mysql)
+   Active: inactive (dead) since mié 2015-09-02 12:40:32 CEST; 3s ago
+     Docs: man:systemd-sysv-generator(8)
+  Process: 23863 ExecStop=/etc/init.d/mysql stop (code=exited, status=0/SUCCESS)
+  Process: 23525 ExecStart=/etc/init.d/mysql start (code=exited, status=0/SUCCESS)
+
+sep 02 12:39:22 Mozart /etc/init.d/mysql[23550]: 150902 12:39:22 mysqld_safe....
+sep 02 12:39:23 Mozart mysql[23525]: ...done.
+sep 02 12:39:23 Mozart systemd[1]: Started LSB: Start and stop the mysql da...n.
+sep 02 12:39:23 Mozart /etc/mysql/debian-start[23757]: /usr/bin/mysql_upgrade...
+sep 02 12:39:23 Mozart /etc/mysql/debian-start[23767]: Checking for insecure ...
+sep 02 12:39:23 Mozart /etc/mysql/debian-start[23771]: Triggering myisam-reco...
+sep 02 12:40:30 Mozart systemd[1]: Stopping LSB: Start and stop the mysql d.....
+sep 02 12:40:30 Mozart mysql[23863]: * Stopping MariaDB database server mysqld
+sep 02 12:40:32 Mozart mysql[23863]: ...done.
+sep 02 12:40:32 Mozart systemd[1]: Stopped LSB: Start and stop the mysql da...n.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+javierpeces@Mozart:~$ ps ajxw|grep mysql
+23369 23916 23915 23369 pts/2    23915 S+    1001   0:00 grep --color=auto mysq
+
+javierpeces@Mozart:~$ sudo mysqld_safe --skip-grant-tables --skip-networking &
+[1] 23926
+
+150902 12:40:51 mysqld_safe Can't log to error log and syslog at the same time.  Remove all --log-error configuration options for --syslog to take effect.
+150902 12:40:51 mysqld_safe Logging to '/var/log/mysql/error.log'.
+150902 12:40:51 mysqld_safe Starting mysqld daemon with databases from /var/lib/mysql
+
+javierpeces@Mozart:~$ ps ajxw|grep mysql
+23369 23926 23926 23369 pts/2    24131 S        0   0:00 sudo mysqld_safe --skip-grant-tables --skip-networking
+23926 23930 23926 23369 pts/2    24131 S        0   0:00 /bin/bash /usr/bin/mysqld_safe --skip-grant-tables --skip-networking
+23930 24096 23926 23369 pts/2    24131 Sl     126   0:00 /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --user=mysql --skip-grant-tables --skip-networking --log-error=/var/log/mysql/error.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/run/mysqld/mysqld.sock --port=3306
+23369 24132 24131 23369 pts/2    24131 S+    1001   0:00 grep --color=auto mysq
+ 
+javierpeces@Mozart:~$ mysql -u root
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 2
+Server version: 10.0.20-MariaDB-0ubuntu0.15.04.1 (Ubuntu)
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use mysql;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+
+MariaDB [mysql]> update user set password=password('txcxnx') where user='root';
+Query OK, 3 rows affected (0.00 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+MariaDB [mysql]> select host,user,password from user;
++-----------+------+-------------------------------------------+
+| host      | user | password                                  |
++-----------+------+-------------------------------------------+
+| localhost | root | *FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC1 |
+| 127.0.0.1 | root | *FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC1 |
+| ::1       | root | *FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC1 |
++-----------+------+-------------------------------------------+
+3 rows in set (0.00 sec)
+
+MariaDB [mysql]> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+javierpeces@Mozart:~$ mysql -uroot -p
+Enter password: txcxnx
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+
+javierpeces@Mozart:~$ sudo mysql -uroot -p
+Enter password: txcxnx
+
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 7
+Server version: 10.0.20-MariaDB-0ubuntu0.15.04.1 (Ubuntu)
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> create user 'javierpeces'@'localhost' identified by 'hyyy22xx';
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]> grant all privileges on *.* to 'javierpeces'@'localhost' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+
